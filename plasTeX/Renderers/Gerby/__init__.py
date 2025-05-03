@@ -14,6 +14,7 @@ import plasTeX
 from plasTeX.Renderers.PageTemplate import Renderer as _Renderer
 from plasTeX.Renderers import Renderable, mixin, unmix
 from plasTeX.DOM import Node
+from plasTeX import Base
 import json
 
 log = plasTeX.Logging.getLogger()
@@ -89,6 +90,33 @@ class GerbyRenderable(Renderable):
         return tag + "." + self.nodeName
 
     raise AttributeError
+  @property
+  def local_footnotes(self):
+      """
+      Finds all footnote nodes that are descendants of this node
+      and assigns a local number (starting from 1) to them
+      in their userdata dictionary under the key 'local_number'.
+      Returns the list of found footnote nodes in document order.
+      """
+      # Check if already computed and cached
+      if hasattr(self, '_local_footnotes_cache'):
+        return self._local_footnotes_cache
+  
+      footnotes = []
+      # Use a depth-first search to find footnotes and preserve order
+      stack = list(self.childNodes) 
+      while stack:
+        node = stack.pop(0) # Use pop(0) for breadth-first like traversal within siblings
+        if node.nodeName == 'footnote':
+          # Assign local number BEFORE adding
+          node.userdata['local_number'] = len(footnotes) + 1
+          footnotes.append(node)
+        # Prepend children to maintain order relative to siblings
+        stack = list(node.childNodes) + stack 
+  
+      # Cache the result
+      self._local_footnotes_cache = footnotes
+      return footnotes
 
 
 """Helper functors for Gerby"""

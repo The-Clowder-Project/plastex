@@ -1,2 +1,7 @@
 name: footnote
-<span class="footnote" data-content="{{ obj }}"><a class="footnotemark" href="#{{ obj.id }}" id="{{ obj.id }}-mark"><sup>{{ obj.mark.attributes.num }}</sup></a></span>
+{# Render the inline mark using the locally assigned number #}
+{# The footnote node's own ID is used for the target of the link #}
+<a class="footnote" href="#fn-{{ obj.id }}" id="fnmark-{{ obj.id }}">
+  <sup>{{ obj.userdata.local_number }}</sup>
+</a>
+{# Do NOT render the text content <span class="footnote" data-content="{{ obj }}"><a class="footnotemark" href="#{{ obj.id }}" id="{{ obj.id }}-mark"><sup>{{ obj.mark.attributes.num }}</sup></a></span> here #}

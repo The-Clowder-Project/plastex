@@ -1,23 +1,37 @@
 name: thmenv
+<div class="env-{{ obj.thmName }}-header"><a class="environment-identifier" href="/tag/{{ obj.userdata['tag'] }}">{{ obj.caption }} <span data-tag="{{ obj.userdata['tag'] }}">{{ obj.ref }}</span><span class="triangleright"> ▶ </span><span class="named">{{ obj.title }}</span></a></div>
 <article class="env-{{ obj.thmName }}" id="{{ obj.userdata['tag'] }}">
+  {# --- Renders the heading --- #}
   {% set states = {'printIdentifier': False} %}
   {% for par in obj %}
     {% if par.isItWhitespace %}
       {{ par }}
     {% else %}
   <p>
-      {%- if not states.printedIdentifier-%}
-        {%- if obj.title -%}
-    <a class="environment-identifier" href="/tag/{{ obj.userdata['tag'] }}">{{ obj.caption }} <span data-tag="{{ obj.userdata['tag'] }}">{{ obj.ref }}</span> <span class="named">({{ obj.title }})</span>.</a>&nbsp;
-        {%- else -%}
-    <a class="environment-identifier" href="/tag/{{ obj.userdata['tag'] }}">{{ obj.caption }} <span data-tag="{{ obj.userdata['tag'] }}">{{ obj.ref }}</span>.</a>&nbsp;
-        {%- endif -%}
-        {% if states.update({'printedIdentifier': True}) %}{% endif %}
-      {%- endif -%}
-    {{par}}</p>
+    {{ par }}</p> {# Render the paragraph content #}
     {% endif %}
   {% endfor %}
-</article>
+
+  {# --- ADDED SECTION FOR LOCAL FOOTNOTES --- #}
+  {% set notes = obj.local_footnotes %}
+  {% if notes %}
+  <div class="local-footnotes">
+    <hr /> {# Optional separator #}
+    <ol>
+    {% for note in notes %}
+      {# Use the footnote's own ID as the list item's ID for linking #}
+      <li id="fn-{{ note.id }}">
+         <sup>{{ note.userdata.local_number }}</sup> {# Display local number #}
+         {{ note }} {# Render the actual footnote content #}
+      </li>
+    {% endfor %}
+    </ol>
+  </div>
+  {% endif %}
+  {# --- END OF ADDED SECTION --- #}
+
+</article> {# End of the thmenv article #}
+<div class="env-{{ obj.thmName }}-footer"></div>
 
 name: proof
 <article class="env-proof">
@@ -27,16 +41,39 @@ name: proof
       {% if obj.caption %}
       <strong>{{ obj.caption }}.</strong>
       {% else %}
-      {# <strong>Proof.</strong> #}
+      {# Assuming 'proofname' exists in context like amsthm provides #}
+      <strong>{{ context.terms.get('proof', 'Proof') }}.</strong>
       {% endif %}
     {% endif %}
+      {# --- Render the paragraph content (potentially including footnote marks) --- #}
       {{ par }}
+      {# --- Place QED symbol at the very end of the last paragraph --- #}
     {% if loop.last %}
-      <span class="qed"><img src="/static/images/trans-flag.svg" width="15px"></span>
-    </p>
+      <span class="qed">$\square$</span>
     {% endif %}
+    </p>
   {% endfor %}
-</article>
+
+  {# --- ADD THIS NEW SECTION FOR LOCAL FOOTNOTES --- #}
+  {% set notes = obj.local_footnotes %}
+  {% if notes %}
+  <div class="local-footnotes">
+    <hr /> {# Optional separator #}
+    <ol>
+    {% for note in notes %}
+      {# Use the footnote's own ID as the list item's ID for linking #}
+      <li id="fn-{{ note.id }}">
+         <sup>{{ note.userdata.local_number }}</sup> {# Display local number #}
+         {{ note }} {# Render the actual footnote content #}
+      </li>
+    {% endfor %}
+    </ol>
+  </div>
+  {% endif %}
+  {# --- END OF ADDED SECTION --- #}
+
+</article> {# End of the proof article #}
+
 
 name: reference slogan history
 {{ obj }}

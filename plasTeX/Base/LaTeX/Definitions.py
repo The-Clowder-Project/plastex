@@ -62,6 +62,7 @@ class renewenvironment(newenvironment):
 
 class newtheorem(Command):
     args = '* name:str [ counter:str ] caption [ within:str ]'
+
     def invoke(self, tex):
         self.parse(tex)
         attrs = self.attributes
