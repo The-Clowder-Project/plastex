@@ -34,12 +34,12 @@ name: thmenv
 <div class="env-{{ obj.thmName }}-footer"></div>
 
 name: proof
+<div class="env-proof-header"><strong>{{ obj.caption }}.</strong></div>
 <article class="env-proof">
   {% for par in obj %}
     <p>
     {% if loop.first %}
       {% if obj.caption %}
-      <strong>{{ obj.caption }}.</strong>
       {% else %}
       {# Assuming 'proofname' exists in context like amsthm provides #}
       <strong>{{ context.terms.get('proof', 'Proof') }}.</strong>
@@ -73,6 +73,7 @@ name: proof
   {# --- END OF ADDED SECTION --- #}
 
 </article> {# End of the proof article #}
+<div class="env-proof-footer"></div>
 
 
 name: reference slogan history

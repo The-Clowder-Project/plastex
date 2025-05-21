@@ -225,6 +225,7 @@ def copyBibliographies(document):
 
     if node.nodeName == "bibliography":
       files = node.attributes["files"].split(",")
+      print(node.attributes["files"])
       for f in files:
         shutil.copyfile(document.userdata["working-dir"] + "/" + f + ".bib", f + ".bib")
 
