@@ -1,7 +1,6 @@
 name: footnote
-{# Render the inline mark using the locally assigned number #}
-{# The footnote node's own ID is used for the target of the link #}
-<a class="footnote" href="#fn-{{ obj.id }}" id="fnmark-{{ obj.id }}">
-  <sup>{{ obj.userdata.local_number }}</sup>
-</a>
-{# Do NOT render the text content <span class="footnote" data-content="{{ obj }}"><a class="footnotemark" href="#{{ obj.id }}" id="{{ obj.id }}-mark"><sup>{{ obj.mark.attributes.num }}</sup></a></span> here #}
+{#- Render the inline mark using the locally assigned number or compressed mark -#}
+{#- The footnote node's own ID is used for the target of the link -#}
+{%- if not obj.userdata.get('suppress_inline_mark', False) -%}
+<span class="footnote" id="fnmark-{{ obj.id }}"><sup>{{- obj.userdata.get('compressed_mark_text') or obj.userdata.local_number -}}</sup></span>{%- endif -%}
+{#- <a class="footnote" href="#fn-{{ obj.id }}" id="fnmark-{{ obj.id }}" content-data="{{ obj.textContent | e }}"><sup>{{- obj.userdata.get('compressed_mark_text') or obj.userdata.local_number -}}</sup></a>{%- endif -%} -#}

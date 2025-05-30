@@ -90,33 +90,129 @@ class GerbyRenderable(Renderable):
         return tag + "." + self.nodeName
 
     raise AttributeError
+
   @property
   def local_footnotes(self):
       """
-      Finds all footnote nodes that are descendants of this node
+      Finds all footnote nodes that are descendants of this node (self, e.g. a thmenv or proof)
       and assigns a local number (starting from 1) to them
       in their userdata dictionary under the key 'local_number'.
       Returns the list of found footnote nodes in document order.
       """
-      # Check if already computed and cached
       if hasattr(self, '_local_footnotes_cache'):
-        return self._local_footnotes_cache
-  
-      footnotes = []
-      # Use a depth-first search to find footnotes and preserve order
-      stack = list(self.childNodes) 
-      while stack:
-        node = stack.pop(0) # Use pop(0) for breadth-first like traversal within siblings
-        if node.nodeName == 'footnote':
-          # Assign local number BEFORE adding
-          node.userdata['local_number'] = len(footnotes) + 1
-          footnotes.append(node)
-        # Prepend children to maintain order relative to siblings
-        stack = list(node.childNodes) + stack 
-  
-      # Cache the result
-      self._local_footnotes_cache = footnotes
-      return footnotes
+          return self._local_footnotes_cache
+
+      footnotes_collected = []
+      # Use a queue for BFS-like traversal of siblings, but DFS for children to maintain document order
+      nodes_to_visit_queue = []
+      if hasattr(self, 'childNodes') and self.childNodes:
+          # Extend queue with children in document order
+          nodes_to_visit_queue.extend(self.childNodes) 
+      
+      head = 0
+      while head < len(nodes_to_visit_queue):
+          current_node = nodes_to_visit_queue[head]
+          head += 1
+          
+          if current_node.nodeName == 'footnote':
+              current_node.userdata['local_number'] = len(footnotes_collected) + 1
+              footnotes_collected.append(current_node)
+          
+          if hasattr(current_node, 'childNodes') and current_node.childNodes:
+              # Insert children at the current head position to process them next (DFS-like within this branch)
+              # This ensures descendants are processed before moving to the next sibling at the current level
+              nodes_to_visit_queue[head:head] = current_node.childNodes
+      
+      self._local_footnotes_cache = footnotes_collected
+      return footnotes_collected
+
+  def _get_flat_renderable_nodes_dfs(self, start_node):
+      """
+      Performs a DFS from start_node to get a flat list of Text and Footnote nodes
+      in document order. Also includes sentinels (None) for block elements that break footnote sequences.
+      """
+      flat_list = []
+      
+      nodes_to_visit_stack = []
+      if hasattr(start_node, 'childNodes') and start_node.childNodes:
+          for child_node in reversed(start_node.childNodes):
+              nodes_to_visit_stack.append(child_node)
+
+      while nodes_to_visit_stack:
+          current_node = nodes_to_visit_stack.pop()
+
+          if current_node.nodeName == 'footnote' or isinstance(current_node, plasTeX.DOM.Text):
+              flat_list.append(current_node)
+          elif current_node.blockType and current_node.nodeName not in ['footnote', '#text']:
+              flat_list.append(None) # Sentinel before block's children
+              if hasattr(current_node, 'childNodes') and current_node.childNodes:
+                  for child_node in reversed(current_node.childNodes):
+                      nodes_to_visit_stack.append(child_node)
+              flat_list.append(None) # Sentinel after block's children
+          elif hasattr(current_node, 'childNodes') and current_node.childNodes:
+              for child_node in reversed(current_node.childNodes):
+                  nodes_to_visit_stack.append(child_node)
+          elif not (hasattr(current_node, 'isElementContentWhitespace') and current_node.isElementContentWhitespace):
+              flat_list.append(None) # Other significant non-container node
+              
+      return flat_list
+
+  def preprocess_footnotes_for_compression(self):
+      """
+      Preprocesses footnotes within this node's scope (e.g., a thmenv or proof)
+      to enable compressed rendering of sequential footnote marks (e.g., "1,2,3").
+      This method should be called *after* local_footnotes has populated 'local_number'.
+      """
+      all_footnotes_in_this_scope = self.local_footnotes # Ensures local_number is set for all footnotes in scope.
+      if not all_footnotes_in_this_scope:
+          return
+
+      # Initialize/reset userdata for all footnotes in this scope
+      for fn_node in all_footnotes_in_this_scope:
+          fn_node.userdata['suppress_inline_mark'] = False
+          fn_node.userdata['compressed_mark_text'] = None
+      
+      flat_renderable_nodes = self._get_flat_renderable_nodes_dfs(self)
+      
+      active_footnote_sequence = []
+      for node_idx, node in enumerate(flat_renderable_nodes):
+          if node is None: # Sentinel for block boundary or significant non-text/non-footnote node
+              if len(active_footnote_sequence) > 1:
+                  fn0 = active_footnote_sequence[0]
+                  fn0.userdata['compressed_mark_text'] = ",".join(str(fn.userdata['local_number']) for fn in active_footnote_sequence)
+                  for k_idx in range(1, len(active_footnote_sequence)):
+                      active_footnote_sequence[k_idx].userdata['suppress_inline_mark'] = True
+              active_footnote_sequence = []
+              continue
+
+          is_footnote = (node.nodeName == 'footnote')
+          is_ignorable_whitespace = (isinstance(node, plasTeX.DOM.Text) and not node.strip())
+
+          if is_footnote:
+              if 'local_number' not in node.userdata: 
+                  if active_footnote_sequence: # Process any pending sequence before skipping
+                      if len(active_footnote_sequence) > 1:
+                          fn0 = active_footnote_sequence[0]
+                          fn0.userdata['compressed_mark_text'] = ",".join(str(fn.userdata['local_number']) for fn in active_footnote_sequence)
+                          for k_idx in range(1, len(active_footnote_sequence)):
+                              active_footnote_sequence[k_idx].userdata['suppress_inline_mark'] = True
+                      active_footnote_sequence = []
+                  continue
+              active_footnote_sequence.append(node)
+          elif not is_ignorable_whitespace:
+              if len(active_footnote_sequence) > 1:
+                  fn0 = active_footnote_sequence[0]
+                  fn0.userdata['compressed_mark_text'] = ",".join(str(fn.userdata['local_number']) for fn in active_footnote_sequence)
+                  for k_idx in range(1, len(active_footnote_sequence)):
+                      active_footnote_sequence[k_idx].userdata['suppress_inline_mark'] = True
+              active_footnote_sequence = []
+        
+      # Process any trailing sequence at the end of traversal
+      if len(active_footnote_sequence) > 1:
+          fn0 = active_footnote_sequence[0]
+          fn0.userdata['compressed_mark_text'] = ",".join(str(fn.userdata['local_number']) for fn in active_footnote_sequence)
+          for k_idx in range(1, len(active_footnote_sequence)):
+              active_footnote_sequence[k_idx].userdata['suppress_inline_mark'] = True
 
 
 """Helper functors for Gerby"""

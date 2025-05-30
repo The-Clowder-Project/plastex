@@ -1,4 +1,8 @@
 name: thmenv
+{# Eagerly compute local_footnotes to ensure numbers are set on footnote objects before their marks are rendered #}
+{% set _ = obj.local_footnotes %}
+{# Preprocess footnotes within this theorem for potential mark compression #}
+{% set _ = obj.preprocess_footnotes_for_compression() %}
 <div class="env-{{ obj.thmName }}-header"><a class="environment-identifier" href="/tag/{{ obj.userdata['tag'] }}">{{ obj.caption }} <span data-tag="{{ obj.userdata['tag'] }}">{{ obj.ref }}</span><span class="triangleright"> ▶ </span><span class="named">{{ obj.title }}</span></a></div>
 <article class="env-{{ obj.thmName }}" id="{{ obj.userdata['tag'] }}">
   {# --- Renders the heading --- #}
@@ -12,8 +16,8 @@ name: thmenv
     {% endif %}
   {% endfor %}
 
-  {# --- ADDED SECTION FOR LOCAL FOOTNOTES --- #}
-  {% set notes = obj.local_footnotes %}
+  {# --- SECTION FOR LOCAL FOOTNOTES LIST AT THE END OF THE ENVIRONMENT --- #}
+  {% set notes = obj.local_footnotes %} {# This will use the cached version #}
   {% if notes %}
   <div class="local-footnotes">
     <hr /> {# Optional separator #}
@@ -21,19 +25,21 @@ name: thmenv
     {% for note in notes %}
       {# Use the footnote's own ID as the list item's ID for linking #}
       <li id="fn-{{ note.id }}">
-         <sup>{{ note.userdata.local_number }}</sup> {# Display local number #}
+         <sup>{{ note.userdata.local_number }}</sup> {# Display local number for the footnote in the list #}
          {{ note }} {# Render the actual footnote content #}
       </li>
     {% endfor %}
     </ol>
   </div>
   {% endif %}
-  {# --- END OF ADDED SECTION --- #}
-
 </article> {# End of the thmenv article #}
 <div class="env-{{ obj.thmName }}-footer"></div>
 
 name: proof
+{# Eagerly compute local_footnotes to ensure numbers are set on footnote objects before their marks are rendered #}
+{% set _ = obj.local_footnotes %}
+{# Preprocess footnotes within this proof for potential mark compression #}
+{% set _ = obj.preprocess_footnotes_for_compression() %}
 <div class="env-proof-header"><strong>{{ obj.caption }}.</strong></div>
 <article class="env-proof">
   {% for par in obj %}
@@ -54,8 +60,8 @@ name: proof
     </p>
   {% endfor %}
 
-  {# --- ADD THIS NEW SECTION FOR LOCAL FOOTNOTES --- #}
-  {% set notes = obj.local_footnotes %}
+  {# --- SECTION FOR LOCAL FOOTNOTES LIST AT THE END OF THE PROOF --- #}
+  {% set notes = obj.local_footnotes %} {# This will use the cached version #}
   {% if notes %}
   <div class="local-footnotes">
     <hr /> {# Optional separator #}
@@ -63,15 +69,13 @@ name: proof
     {% for note in notes %}
       {# Use the footnote's own ID as the list item's ID for linking #}
       <li id="fn-{{ note.id }}">
-         <sup>{{ note.userdata.local_number }}</sup> {# Display local number #}
+         <sup>{{ note.userdata.local_number }}</sup> {# Display local number for the footnote in the list #}
          {{ note }} {# Render the actual footnote content #}
       </li>
     {% endfor %}
     </ol>
   </div>
   {% endif %}
-  {# --- END OF ADDED SECTION --- #}
-
 </article> {# End of the proof article #}
 <div class="env-proof-footer"></div>
 
