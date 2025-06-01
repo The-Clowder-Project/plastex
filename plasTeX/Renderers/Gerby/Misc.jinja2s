@@ -6,14 +6,14 @@ name: bgroup
 name: tableofcontents input @vobeyspaces @noligs def protect let \
       newcommand hfill hline openout renewcommand write hspace appendix \
       global noindent include markboth setcounter refstepcounter \
-      bigskip medskip smallskip parindent setlength settowidth addtolength \
+      bigskip medskip smallskip setlength settowidth addtolength \
       nopagebreak newwrite newcounter typeout sloppypar thispagestyle vfill \
       hypertarget newenvironment reversemarginpar phantomsection \
       vskip pagestyle centerline hyperref marginnote normalmarginpar \
       bibliography bibliographystyle
 
 name: indent
-<span class="indent"></span>
+<span style="display: inline-block; margin-left: 1em"></span>
 
 name: texorpdfstring
 {{ obj.argSources['tex'][1:-1] }}
