@@ -18,15 +18,28 @@ name: description
 
 name: item
 <li
-{%- if obj.attributes['term'] or obj.userdata['tag'] %}
- class="custom-item"
-  {%- if obj.attributes['term'] %}
- data-marker="{{- obj.attributes['term'] | striptags -}}"
-  {%- endif -%}
-  {%- if obj.userdata['tag'] %}
- id="{{- obj.userdata['tag'] -}}"
-  {%- endif -%}
-{%- endif -%}
-><span class="counter"><a class="counter-link" href="/tag/{{- obj.userdata['tag'] -}}"><span class="counter-inner"></span></a></span>
-  {{- obj -}}
+{%- if obj.attributes['term'] %} class="description-item" data-marker="{{- obj.attributes['term'] | striptags -}}" {# For description lists, the term itself is the marker #}
+{%- elif obj.ref %} class="enumerate-item" {# For enumerated lists with a counter #}
+{%- else %} class="itemize-item" {# For itemize or other lists without a .ref #}
+{%- endif %}
+{%- if obj.userdata['tag'] %} id="{{- obj.userdata['tag'] -}}"{% endif -%} {# Gerby tag for linking #}
+>
+  <span class="counter">
+    {# The link target uses the Gerby tag if available, otherwise the item's own DOM id as a fallback #}
+    <a class="counter-link" href="/tag/{{- obj.userdata['tag'] if obj.userdata['tag'] else obj.id -}}">
+      <span class="counter-inner">
+        {%- if obj.ref -%}
+          {{- obj.ref -}} {# This explicitly writes the LaTeX counter (e.g., "1.", "a)") #}
+        {%- elif not obj.attributes['term'] -%}
+          {# For itemize lists, obj.ref is usually None.
+             The bullet is typically handled by CSS on the <ul> or <li>.
+             If you need a fallback character here when CSS might not apply,
+             you could insert '•' or leave it empty for CSS to handle.
+             Leaving it empty for now to favor CSS for itemize bullets. #}
+        {%- endif -%}
+      </span>
+    </a>
+  </span>
+  {# The actual content of the list item, wrapped for potential styling #}
+  <span class="item-content">{{- obj -}}</span>
 </li>
