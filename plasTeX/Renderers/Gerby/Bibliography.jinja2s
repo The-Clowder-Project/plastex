@@ -1,2 +1,18 @@
 name: cite
-<span class="cite">[{% if obj.postnote %}<span class="postnote">{{ obj.postnote }}</span>, {% endif %}{% for item in obj.attributes['bibkeys'] %}<a href="/bibliography/{{ item }}">{{ item }}</a>{{ ", " if not loop.last }}{% endfor %}]</span>
+{# <!-- 
+  DEBUG: Top of cite template.
+  Bibitems (from .bbl): {{ obj.ownerDocument.userdata.getPath('bibliography/bibitems', {}).keys()|list }}
+  Bibcites (from .aux/.bbl, e.g. natbib): {{ obj.ownerDocument.userdata.getPath('bibliography/bibcites', {}).keys()|list }}
+  Direct Bib Data (from .bib): {{ obj.ownerDocument.userdata.get('_direct_bib_data', {}).keys()|list }}
+--> #}
+<span class="cite">
+  {%- if obj.postnote %}<span class="postnote">{{ obj.postnote }}</span>{%- if obj.attributes['bibkeys'] %} of {% endif %}{% endif -%}
+  {%- for item_key in obj.attributes['bibkeys'] -%}
+    {# <!-- DEBUG: Cite template for key '{{ item_key }}'.
+         Calling: obj.get_formatted_bibitem_link_text('{{ item_key }}')
+         Result of call: {{ obj.get_formatted_bibitem_link_text(item_key) }}
+    --> #}
+    <a href="/bibliography/{{ item_key }}">[{{ obj.get_formatted_bibitem_link_text(item_key) }}]</a>
+    {{- ", " if not loop.last else "" -}}
+  {%- endfor -%}
+</span>
