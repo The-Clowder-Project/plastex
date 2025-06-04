@@ -30,7 +30,7 @@ name: item
       <span class="counter-inner">
         {%- if obj.parentNode.nodeName == "enumerate" -%}
           {%- if obj.ref -%}
-            {{- obj.ref -}} {# This explicitly writes the LaTeX counter (e.g., "1.", "a)") #}.
+            <span data-tag="{{ obj.userdata['tag'] }}">{{- obj.ref -}}.</span>
           {%- endif -%}
         {%- endif -%}
       </span>
