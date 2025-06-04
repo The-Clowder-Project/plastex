@@ -32,6 +32,8 @@ name: item
           {%- if obj.ref -%}
             <span data-tag="{{ obj.userdata['tag'] }}">{{- obj.ref -}}.</span>
           {%- endif -%}
+        {%- else -%}
+          •
         {%- endif -%}
       </span>
     </a>

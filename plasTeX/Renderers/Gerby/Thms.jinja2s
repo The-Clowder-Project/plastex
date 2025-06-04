@@ -22,11 +22,11 @@ name: thmenv
   <div class="local-footnotes">
     <hr /> {# Optional separator #}
     <ol class="footnotes">
-    {% for note in notes %}
-      {# Use the footnote's own ID as the list item's ID for linking #}
+    {%- for note in notes -%}
+      {#- Use the footnote's own ID as the list item's ID for linking -#}
       <li id="fn-{{ note.id }}">
-         <sup>{{ note.userdata.local_number }}</sup> {# Display local number for the footnote in the list #}
-         {{ note }} {# Render the actual footnote content #}
+         <sup>{{- note.userdata.local_number -}}</sup> {#- Display local number for the footnote in the list -#}
+         {{- note -}} {#- Render the actual footnote content -#}
       </li>
     {% endfor %}
     </ol>
@@ -66,11 +66,11 @@ name: proof
   <div class="local-footnotes">
     <hr /> {# Optional separator #}
     <ol class="footnotes">
-    {% for note in notes %}
-      {# Use the footnote's own ID as the list item's ID for linking #}
+    {%- for note in notes -%}
+      {#- Use the footnote's own ID as the list item's ID for linking -#}
       <li id="fn-{{ note.id }}">
-         <sup>{{ note.userdata.local_number }}</sup> {# Display local number for the footnote in the list #}
-         {{ note }} {# Render the actual footnote content #}
+         <sup>{{- note.userdata.local_number -}}</sup> {#- Display local number for the footnote in the list -#}
+         {{- note -}} {#- Render the actual footnote content -#}
       </li>
     {% endfor %}
     </ol>
