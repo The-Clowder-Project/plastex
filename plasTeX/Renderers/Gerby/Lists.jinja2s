@@ -28,14 +28,10 @@ name: item
     {# The link target uses the Gerby tag if available, otherwise the item's own DOM id as a fallback #}
     <a class="counter-link" href="/tag/{{- obj.userdata['tag'] if obj.userdata['tag'] else obj.id -}}">
       <span class="counter-inner">
-        {%- if obj.ref -%}
-          {{- obj.ref -}} {# This explicitly writes the LaTeX counter (e.g., "1.", "a)") #}
-        {%- elif not obj.attributes['term'] -%}
-          {# For itemize lists, obj.ref is usually None.
-             The bullet is typically handled by CSS on the <ul> or <li>.
-             If you need a fallback character here when CSS might not apply,
-             you could insert '•' or leave it empty for CSS to handle.
-             Leaving it empty for now to favor CSS for itemize bullets. #}
+        {%- if obj.parentNode.nodeName == "enumerate" -%}
+          {%- if obj.ref -%}
+            {{- obj.ref -}} {# This explicitly writes the LaTeX counter (e.g., "1.", "a)") #}.
+          {%- endif -%}
         {%- endif -%}
       </span>
     </a>
