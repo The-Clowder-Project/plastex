@@ -15,7 +15,6 @@ from plasTeX.Renderers import Renderable, mixin, unmix
 from plasTeX.DOM import Node, Text as DOMText # Explicitly import Text
 from plasTeX import Base
 import json
-import time
 
 log = plasTeX.Logging.getLogger()
 gerby_log = plasTeX.Logging.getLogger('GerbyRenderer')
@@ -148,11 +147,13 @@ def _format_authors_gerby(author_string):
     # Handle group authors first
     group_match = re.match(r'^\{\{(.+)\}\}$', author_string.strip())
     if group_match:
-        print("YAY")
-        print(group_match.group(1))
-        print(group_match.group(1).strip())
-        time.sleep(123123)
         return group_match.group(1).strip()
+    if author_string == "{Proof Wiki Contributors}":
+        return "Proof Wiki Contributors"
+    if author_string == "{nLab Authors}":
+        return "nLab Authors"
+    if author_string == "{Wikipedia Contributors}":
+        return "Wikipedia Contributors"
 
     authors_list = []
     # Split by ' and '
