@@ -32,3 +32,5 @@ name: webcompile
 
 name: tikzcdid
 <div class="tikz-cd"><img src="/static/tikzcd-images/tikzcd-{{ obj }}.svg"></div>
+
+name: Gape

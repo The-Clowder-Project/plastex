@@ -25,3 +25,15 @@ class tikzcdid(Command):
     A custom LaTeX command \tikzcdid{id}.
     """
     args = 'self'
+
+class rowcolor(Command):
+    """
+    A custom LaTeX command \rowcolor{id}.
+    """
+    args = 'self'
+
+class Gape(Command):
+    """
+    A custom LaTeX command \Gape[one][two].
+    """
+    args = '[one] [two]'
