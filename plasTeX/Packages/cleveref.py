@@ -43,13 +43,19 @@ class cref(CleverRef):
         if isinstance(name, tuple):
             name = name[0]
         #return name[0].lower() + name[1:]
-        return name[0].upper() + name[1:]
+        if (name[0].upper() + name[1:]) == "Enumi":
+            finalName = "Item"
+        else:
+            finalName = name[0].upper() + name[1:]
+        return finalName
 
-class Cref(CleverRef):
-    def refname(self) -> str:
-        name = self.refname_raw()
-        if name is None:
-            return ""
-        if isinstance(name, tuple):
-            name = name[1]
-        return name[0].upper() + name[1:]
+class Cref(cref):
+    pass
+#class Cref(CleverRef):
+#    def refname(self) -> str:
+#        name = self.refname_raw()
+#        if name is None:
+#            return ""
+#        if isinstance(name, tuple):
+#            name = name[1]
+#        return name[0].upper() + name[1:]
