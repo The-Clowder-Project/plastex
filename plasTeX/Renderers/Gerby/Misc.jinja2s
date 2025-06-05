@@ -23,3 +23,12 @@ name: href
 
 name: xspace
 &nbsp;
+
+name: scalemath
+<div class="scalemath"><img src="/static/scalemath-images/scalemath-{{ obj }}.svg"></div>
+
+name: webcompile
+<div class="webcompile"><img src="/static/webcompile-images/webcompile-{{ obj }}.svg"></div>
+
+name: tikzcdid
+<div class="tikzcd"><img src="/static/tikzcd-images/tikzcd-{{ obj }}.svg"></div>
