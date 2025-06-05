@@ -2,7 +2,11 @@ name: ref
 <a href="/tag/{{ here.idref.label.userdata['tag'] }}" data-tag="{{ here.idref.label.userdata['tag'] }}">{{ here.idref.label.ref }}</a>
 
 name: cref Cref
-<a href="/tag/{{ here.idref.label.userdata['tag'] }}" data-tag="{{ here.idref.label.userdata['tag'] }}">{{ here.refname() }} {{ here.idref.label.ref }}</a>
+{%- if here.idref and here.idref.label and here.idref.label.ref is not none -%}
+    <a href="/tag/{{ here.idref.label.userdata['tag'] }}" data-tag="{{ here.idref.label.userdata['tag'] }}">{{ here.refname() }} {{ here.idref.label.ref }}</a>
+{%- else -%}
+    <a style="cursor: pointer;" tabindex="0" role="button" data-trigger="focus" data-placement="bottom" data-toggle="popover" title="<span class=no-reference-popover-title>Future Reference</span>" data-html="true" data-content="<div class=no-reference-popover-content>This is a reference to something which is not yet available in the Clowder Project.</div>"><img class="question-svg" src="/static/images/question.svg" alt="Unresolved reference"></a>
+{%- endif -%}
 
 name: label
 
