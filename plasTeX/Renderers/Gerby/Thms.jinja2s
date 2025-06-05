@@ -79,6 +79,8 @@ name: proof
 </article> {# End of the proof article #}
 <div class="env-proof-footer"></div>
 
-
 name: reference slogan history
 {{ obj }}
+
+name: ProofBox
+<div class="proofbox">{{ obj }}</div>

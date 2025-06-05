@@ -20,7 +20,6 @@ log = plasTeX.Logging.getLogger()
 gerby_log = plasTeX.Logging.getLogger('GerbyRenderer')
 gerby_log.setLevel(plasTeX.Logging.DEBUG) # Ensure Gerby debug messages are shown
 
-
 def simple_bib_parser(bib_file_path):
     """
     A very simple .bib file parser.

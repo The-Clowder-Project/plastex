@@ -17,6 +17,7 @@ from plasTeX.Base.LaTeX.FontSelection import *
 from plasTeX.Base.LaTeX.Footnotes import *
 from plasTeX.Base.LaTeX.Files import *
 from plasTeX.Base.LaTeX.Floats import *
+from plasTeX.Base.LaTeX.GerbyCommands import *
 from plasTeX.Base.LaTeX.Index import *
 from plasTeX.Base.LaTeX.Lengths import *
 from plasTeX.Base.LaTeX.Lists import *
