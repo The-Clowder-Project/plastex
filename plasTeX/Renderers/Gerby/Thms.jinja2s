@@ -55,7 +55,7 @@ name: proof
       {{ par }}
       {# --- Place QED symbol at the very end of the last paragraph --- #}
     {% if loop.last %}
-      <span class="qed">$\square$</span>
+      <span class="qed"><img src="/static/images/trans-flag.svg" width="15px"></span>
     {% endif %}
     </p>
   {% endfor %}
