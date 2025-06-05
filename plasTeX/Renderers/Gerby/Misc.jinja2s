@@ -31,4 +31,4 @@ name: webcompile
 <div class="webcompile"><img src="/static/webcompile-images/webcompile-{{ obj }}.svg"></div>
 
 name: tikzcdid
-<div class="tikzcd"><img src="/static/tikzcd-images/tikzcd-{{ obj }}.svg"></div>
+<div class="tikz-cd"><img src="/static/tikzcd-images/tikzcd-{{ obj }}.svg"></div>
