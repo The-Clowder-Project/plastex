@@ -27,7 +27,11 @@ name: item
   <span class="counter">
     {# The link target uses the Gerby tag if available, otherwise the item's own DOM id as a fallback #}
     <a class="counter-link" href="/tag/{{- obj.userdata['tag'] if obj.userdata['tag'] else obj.id -}}">
-      <span class="counter-inner">
+      <span
+        {%- if obj.ref %} class="counter-inner"        {# For enumerated lists with a counter #}
+        {%- else %}       class="counter-inner-no-tag" {# For itemize or other lists without a .ref #}
+        {%- endif %}
+      >
         {%- if obj.parentNode.nodeName == "enumerate" -%}
           {%- if obj.ref -%}
             <span data-tag="{{ obj.userdata['tag'] }}">{{- obj.ref -}}.</span>
