@@ -2,6 +2,30 @@
 
 from plasTeX import Command, Environment
 
+class envsmallsize(Environment):
+    """
+    A custom LaTeX environment.
+    """
+    args = ''
+
+class envfootnotesize(Environment):
+    """
+    A custom LaTeX environment.
+    """
+    args = ''
+
+class envscriptsize(Environment):
+    """
+    A custom LaTeX environment.
+    """
+    args = ''
+
+class envtinysize(Environment):
+    """
+    A custom LaTeX environment.
+    """
+    args = ''
+
 class ProofBox(Command):
     """
     A custom LaTeX command \ProofBox{content}.
@@ -44,26 +68,9 @@ class textiff(Command):
     """
     args = ''
 
-class envsmallsize(Environment):
+class itemstar(Command):
     """
-    A custom LaTeX environment.
-    """
-    args = ''
-
-class envfootnotesize(Environment):
-    """
-    A custom LaTeX environment.
+    A custom LaTeX command \itemstar.
     """
     args = ''
 
-class envscriptsize(Environment):
-    """
-    A custom LaTeX environment.
-    """
-    args = ''
-
-class envtinysize(Environment):
-    """
-    A custom LaTeX environment.
-    """
-    args = ''

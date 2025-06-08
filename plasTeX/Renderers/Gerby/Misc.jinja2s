@@ -49,3 +49,6 @@ name: envtinysize
 
 name: textiff
 iff
+
+name: itemstar
+<li class="itemize-item"><span class="counter"><span class="counter-inner">(★)</span><span class="item-content">{{- obj -}}</span></li>
