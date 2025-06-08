@@ -51,4 +51,4 @@ name: textiff
 iff
 
 name: itemstar
-<li class="itemize-item"><span class="counter"><span class="counter-inner">(★)</span><span class="item-content">{{- obj -}}</span></li>
+<li class="itemize-item"><span class="counter"><span class="counter-inner-no-tag">(★)</span><span class="item-content">{{- obj -}}</span></li>
