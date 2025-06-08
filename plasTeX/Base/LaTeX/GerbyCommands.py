@@ -74,3 +74,9 @@ class itemstar(Command):
     """
     args = ''
 
+class textdbend(Command):
+    """
+    A custom LaTeX command \textdbend.
+    """
+    args = ''
+

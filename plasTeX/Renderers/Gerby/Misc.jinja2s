@@ -52,3 +52,6 @@ iff
 
 name: itemstar
 <li class="itemize-item"><span class="counter"><span class="counter-inner-no-tag">(★)</span><span class="item-content">{{- obj -}}</span></li>
+
+name: textdbend
+<span class="textdbend-container"><span class="textdbend-content"><img alt="Dangerous Bend Symbol" src="/static/images/dbend.svg">
