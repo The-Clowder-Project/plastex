@@ -34,3 +34,18 @@ name: tikzcdid
 <div class="tikz-cd"><img src="/static/tikzcd-images/tikzcd-{{ obj }}.svg"></div>
 
 name: Gape
+
+name: envsmallsize
+<div class="smallsize">{{ obj }}</div>
+
+name: envfootnotesize
+<div class="footnotesize">{{ obj }}</div>
+
+name: envscriptsize
+<div class="scriptsize">{{ obj }}</div>
+
+name: envtinysize
+<div class="tinysize">{{ obj }}</div>
+
+name: textiff
+iff

@@ -1,6 +1,6 @@
 # plasTeX/Base/LaTeX/GerbyCommands.py
 
-from plasTeX import Command
+from plasTeX import Command, Environment
 
 class ProofBox(Command):
     """
@@ -37,3 +37,33 @@ class Gape(Command):
     A custom LaTeX command \Gape[one][two].
     """
     args = '[one] [two]'
+
+class textiff(Command):
+    """
+    A custom LaTeX command \textiff.
+    """
+    args = ''
+
+class envsmallsize(Environment):
+    """
+    A custom LaTeX environment.
+    """
+    args = ''
+
+class envfootnotesize(Environment):
+    """
+    A custom LaTeX environment.
+    """
+    args = ''
+
+class envscriptsize(Environment):
+    """
+    A custom LaTeX environment.
+    """
+    args = ''
+
+class envtinysize(Environment):
+    """
+    A custom LaTeX environment.
+    """
+    args = ''
