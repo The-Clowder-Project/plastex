@@ -2,8 +2,54 @@ name: ref
 <a href="/tag/{{ here.idref.label.userdata['tag'] }}" data-tag="{{ here.idref.label.userdata['tag'] }}">{{ here.idref.label.ref }}</a>
 
 name: cref Cref
+{#-
+  Defines a reusable macro to generate the hyperlink.
+  This avoids repeating the long <a> tag multiple times.
+  - ARGS:
+    - ref_obj: The object containing the reference details (here.idref.label).
+    - display_text: The text content that should appear inside the link.
+-#}
+{%- macro ref_link(ref_obj, display_text) -%}
+    <a href="/tag/{{ ref_obj.userdata['tag'] }}" data-tag="{{ ref_obj.userdata['tag'] }}">{{ display_text }}</a>
+{%- endmacro -%}
+
+{#- Dictionaries for number-to-string conversions -#}
+{%- set to_alpha = {
+    '1': 'a', '2': 'b', '3': 'c', '4': 'd', '5': 'e', '6': 'f', '7': 'g',
+    '8': 'h', '9': 'i', '10': 'j', '11': 'k', '12': 'l', '13': 'm', '14': 'n',
+    '15': 'o', '16': 'p', '17': 'q', '18': 'r', '19': 's', '20': 't',
+    '21': 'u', '22': 'v', '23': 'w', '24': 'x', '25': 'y', '26': 'z',
+    '27': 'aa', '28': 'ab', '29': 'ac', '30': 'ad', '31': 'ae', '32': 'af',
+    '33': 'ag', '34': 'ah', '35': 'ai', '36': 'aj', '37': 'ak', '38': 'al',
+    '39': 'am', '40': 'an', '41': 'ao', '42': 'ap', '43': 'aq', '44': 'ar',
+    '45': 'as', '46': 'at', '47': 'au', '48': 'av', '49': 'aw', '50': 'ax'
+} -%}
+
+{%- set to_roman = {
+    '1': 'i', '2': 'ii', '3': 'iii', '4': 'iv', '5': 'v', '6': 'vi',
+    '7': 'vii', '8': 'viii', '9': 'ix', '10': 'x', '11': 'xi', '12': 'xii',
+    '13': 'xiii', '14': 'xiv', '15': 'xv', '16': 'xvi', '17': 'xvii',
+    '18': 'xviii', '19': 'xix', '20': 'xx', '21': 'xxi', '22': 'xxii',
+    '23': 'xxiii', '24': 'xxiv', '25': 'xxv', '26': 'xxvi', '27': 'xxvii',
+    '28': 'xxviii', '29': 'xxix', '30': 'xxx', '31': 'xxxi', '32': 'xxxii',
+    '33': 'xxxiii', '34': 'xxxiv', '35': 'xxxv', '36': 'xxxvi',
+    '37': 'xxxvii', '38': 'xxxviii', '39': 'xxxix', '40': 'xl',
+    '41': 'xli', '42': 'xlii', '43': 'xliii', '44': 'xliv', '45': 'xlv',
+    '46': 'xlvi', '47': 'xlvii', '48': 'xlviii', '49': 'xlix', '50': 'l'
+} -%}
+
+{#- Main conditional logic for rendering the reference -#}
 {%- if here.idref and here.idref.label and here.idref.label.ref is not none -%}
-    <a href="/tag/{{ here.idref.label.userdata['tag'] }}" data-tag="{{ here.idref.label.userdata['tag'] }}">{{ here.refname() }} {{ here.idref.label.ref }}</a>
+    {%- set label_ref_str = here.idref.label.ref|string -%}
+    {%- if here.refname() == "Enumi" -%}
+        {{ ref_link(here.idref.label, 'Item ' ~ label_ref_str) }}
+    {%- elif here.refname() == "Enumii" -%}
+        {{ ref_link(here.idref.label, 'Item ' ~ to_alpha.get(label_ref_str, label_ref_str)) }}
+    {%- elif here.refname() == "Enumiii" -%}
+        {{ ref_link(here.idref.label, 'Item ' ~ to_roman.get(label_ref_str, label_ref_str)) }}
+    {%- else -%}
+        {{ ref_link(here.idref.label, here.refname() ~ ' ' ~ label_ref_str) }}
+    {%- endif -%}
 {%- else -%}
     <a style="cursor: pointer;" tabindex="0" role="button" data-trigger="focus" data-placement="bottom" data-toggle="popover" title="<span class=no-reference-popover-title>Future Reference</span>" data-html="true" data-content="<div class=no-reference-popover-content>This is a reference to something which is not yet available in the Clowder Project.</div>"><img class="question-svg" src="/static/images/question.svg" alt="Unresolved reference"></a>
 {%- endif -%}

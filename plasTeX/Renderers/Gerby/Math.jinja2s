@@ -16,3 +16,28 @@ name: equation eqnarray align gather
   {% endif %}
   <div>{{ obj.source }}</div>
 </div>
+
+name: palign
+<div class="palign">
+  <table class="tabular">
+  {% for row in obj %}
+    <tr>
+    {% for cell in row %}
+    {% if cell.isHeader %}
+      <th style="{{ cell.style.inline }}" 
+          rowspan="{{ cell.attributes.rowspan }}"
+          colspan="{{ cell.attributes.colspan}}">
+        {{ cell }}
+      </th>
+    {% else %}
+      <td  style="{{ cell.style.inline }}" 
+          rowspan="{{ cell.attributes.rowspan }}"
+          colspan="{{ cell.attributes.colspan }}">
+        {{ cell }}
+      </td>
+    {% endif %}
+    {% endfor %}
+    </tr>
+  {% endfor %}
+  </table>
+</div>

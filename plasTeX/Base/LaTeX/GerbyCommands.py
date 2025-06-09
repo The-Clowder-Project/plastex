@@ -1,6 +1,8 @@
 # plasTeX/Base/LaTeX/GerbyCommands.py
 
 from plasTeX import Command, Environment
+from plasTeX.Base.LaTeX.Math import EqnarrayStar
+from plasTeX.Base.LaTeX.Arrays import Array
 
 class envsmallsize(Environment):
     """
@@ -80,3 +82,16 @@ class textdbend(Command):
     """
     args = ''
 
+class ptag(Command):
+    """
+    A simple command \ptag{...} that just holds its content.
+    It will be used as a delimiter inside the palign environment.
+    """
+    args = 'self'
+
+class palign(Array):
+    """
+    A custom environment for aligning equations with tags on the right.
+    It digests its content into a structured list of rows and cells.
+    """
+    pass

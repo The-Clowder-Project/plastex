@@ -433,7 +433,6 @@ class GerbyRenderable(Renderable):
       gerby_log.debug(f"GFBLT: (Userdata/BBL Parse) For key '{bib_key}', Author: '{author_text}', Title: '{title_text}'")
       return f"{author_text}, {title_text}"
 
-
 """Helper functors for Gerby"""
 
 def decorateTags(node, labels):
