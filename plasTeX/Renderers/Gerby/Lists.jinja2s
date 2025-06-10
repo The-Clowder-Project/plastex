@@ -17,6 +17,9 @@ name: description
 </dl>
 
 name: item
+{%- set to_alpha = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'] -%}
+{%- set to_roman = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi', 'xii', 'xiii', 'xiv', 'xv', 'xvi', 'xvii', 'xviii', 'xix', 'xx'] -%}
+{%- set to_Roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'] -%}
 <li
 {%- if obj.attributes['term'] %} class="description-item" data-marker="{{- obj.attributes['term'] | striptags -}}" {# For description lists, the term itself is the marker #}
 {%- elif obj.ref %} class="enumerate-item" {# For enumerated lists with a counter #}
@@ -34,7 +37,19 @@ name: item
       >
         {%- if obj.parentNode.nodeName == "enumerate" -%}
           {%- if obj.ref -%}
-            <span data-tag="{{ obj.userdata['tag'] }}">{{- obj.ref -}}.</span>
+            <span data-tag="{{ obj.userdata['tag'] }}">
+            {%- if obj.counter == 'enumi' -%}
+                {{- obj.ref -}}.
+            {%- elif obj.counter == 'enumii' and obj.position <= to_alpha|length -%}
+                ({{- to_alpha[obj.position - 1] -}})
+            {%- elif obj.counter == 'enumiii' and obj.position <= to_roman|length -%}
+                ({{- to_roman[obj.position - 1] -}})
+            {%- elif obj.counter == 'enumiv' and obj.position <= to_Roman|length -%}
+                ({{- to_Roman[obj.position - 1] -}})
+            {%- else -%}
+                {{- obj.ref -}}.
+            {%- endif -%}
+            </span>
           {%- endif -%}
         {%- else -%}
           •
