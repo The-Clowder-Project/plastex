@@ -36,7 +36,8 @@ else:
         pdb.set_trace()
 
     def jinja2template(s, encoding='utf8'):
-        env = Environment(trim_blocks=True, lstrip_blocks=True)
+        #env = Environment(trim_blocks=True, lstrip_blocks=True)
+        env = Environment(trim_blocks=True, lstrip_blocks=True, extensions=['jinja2.ext.loopcontrols'])
         env.globals['debug'] = debug
 
         def renderjinja2(obj, s=s):

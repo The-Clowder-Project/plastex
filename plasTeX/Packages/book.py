@@ -5,10 +5,25 @@ from plasTeX import Command, TheCounter
 def ProcessOptions(options, document):
     context = document.context
     # Lists
-    context.newcounter('enumi')
-    context.newcounter('enumii', resetby='enumi')
-    context.newcounter('enumiii', resetby='enumii')
-    context.newcounter('enumiv', resetby='enumiii')
+    # Redefine enumerate counters for nested formatting
+    # Level 1: 1, 2, 3...
+    context.newcounter('enumi', format='${enumi.arabic}')
+    # Level 2: 1a, 1b, 1c...
+    context.newcounter('enumii', resetby='enumi', format='${theenumi}${enumii.alph}')
+    # Level 3: 1a(i), 1a(ii), 1a(iii)...
+    context.newcounter('enumiii', resetby='enumii', format='${theenumii}(${enumiii.roman})')
+    # Level 4: 1a(i)A, 1a(i)B, ...
+    context.newcounter('enumiv', resetby='enumiii', format='${theenumiii}${enumiv.Alph}')
+
+    # And now, you must define the `theenum...` commands that are used in the formats.
+    context.newcommand('theenumi', 0, r'\arabic{enumi}')
+    context.newcommand('theenumii', 0, r'\theenumi\alph{enumii}')
+    context.newcommand('theenumiii', 0, r'\theenumii(\roman{enumiii})')
+    context.newcommand('theenumiv', 0, r'\theenumiii\Alph{enumiv}')
+    #context.newcounter('enumi')
+    #context.newcounter('enumii', resetby='enumi')
+    #context.newcounter('enumiii', resetby='enumii')
+    #context.newcounter('enumiv', resetby='enumiii')
 
     # Sections
     context.newcounter('part', resetby='volume',
