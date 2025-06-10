@@ -22,10 +22,10 @@ gerby_log.setLevel(plasTeX.Logging.DEBUG) # Ensure Gerby debug messages are show
 
 def simple_bib_parser(bib_file_path):
     """
-    A very simple .bib file parser.
+    A simple .bib file parser that handles math commands like \mathcal and \mathbb.
     Returns a dictionary mapping bib_keys to dictionaries of fields.
     Handles basic entries, comments, and multi-line fields.
-    Does NOT handle @string macros, crossrefs well, or complex LaTeX in fields.
+    Does NOT handle @string macros or crossrefs well.
     """
     parsed_entries = {}
     if not os.path.exists(bib_file_path):
@@ -85,45 +85,64 @@ def simple_bib_parser(bib_file_path):
                 field_name = parts[0].lower().strip()
                 field_value_raw = parts[1].strip()
                 
+                # Strip outer delimiters ({} or "")
                 field_value_processed = field_value_raw
                 if (field_value_raw.startswith('{') and field_value_raw.endswith('}')):
                     field_value_processed = field_value_raw[1:-1]
                 elif (field_value_raw.startswith('"') and field_value_raw.endswith('"')):
                     field_value_processed = field_value_raw[1:-1]
-                elif field_value_raw.isdigit() or (field_value_raw.isalpha() and field_value_raw.isupper()):
-                     pass 
 
-
-                temp_value_parts = []
+                # ================================================================
+                # START: Replaced section for smarter command stripping
+                # ================================================================
+                processed_parts = []
                 last_end = 0
+                
+                # This pattern finds various forms of math mode content
                 math_pattern = re.compile(r'(\\\$|\$\$[^\$]*?\$\$|\$(?!\$)[^\$]*?\$|\{\s*\$([^\$]*?)\$\s*\})')
 
                 for math_match in math_pattern.finditer(field_value_processed):
-                    temp_value_parts.append(field_value_processed[last_end:math_match.start()])
+                    # Part 1: Process the non-math text before this match
+                    non_math_part = field_value_processed[last_end:math_match.start()]
                     
-                    matched_string = math_match.group(1)
+                    # Strip formatting commands from the non-math part
+                    for tex_cmd in ['emph', 'textit', 'textbf', 'texttt', 'textsl', 'textsc', 'textrm', 'textnormal']:
+                        non_math_part = re.sub(r'\\%s\s*\{(.*?)\}' % tex_cmd, r'\1', non_math_part)
                     
-                    if matched_string == r'\$':
-                        temp_value_parts.append('$') 
-                    elif matched_string.startswith('$$') and matched_string.endswith('$$'):
-                        temp_value_parts.append(f"\\[{matched_string[2:-2].strip()}\\]") 
-                    elif matched_string.startswith('{$') and matched_string.endswith('$}'):
+                    # Strip other simple commands from the non-math part
+                    non_math_part = re.sub(r'\\[a-zA-Z@]+(?!\w)', '', non_math_part)
+                    processed_parts.append(non_math_part)
+                    
+                    # Part 2: Process the math part itself, keeping commands
+                    math_part = math_match.group(1)
+                    if math_part == r'\$':
+                        processed_parts.append('$') 
+                    elif math_part.startswith('$$') and math_part.endswith('$$'):
+                        # Normalize display math
+                        processed_parts.append(f"\\[{math_part[2:-2].strip()}\\]") 
+                    elif math_part.startswith('{$') and math_part.endswith('$}'):
+                        # Normalize {$...$} to $...$
                         inner_math = math_match.group(2) 
-                        temp_value_parts.append(f"${inner_math.strip()}$")
-                    elif matched_string.startswith('$') and matched_string.endswith('$'):
-                        temp_value_parts.append(f"${matched_string[1:-1].strip()}$") 
-                    else: 
-                        temp_value_parts.append(matched_string)
+                        processed_parts.append(f"${inner_math.strip()}$")
+                    else:
+                        # Keep inline math $...$ as is
+                        processed_parts.append(math_part) 
+                    
                     last_end = math_match.end()
                 
-                temp_value_parts.append(field_value_processed[last_end:])
-                field_value_processed = "".join(temp_value_parts)
-                
+                # Part 3: Process any remaining text after the last math block
+                remaining_part = field_value_processed[last_end:]
                 for tex_cmd in ['emph', 'textit', 'textbf', 'texttt', 'textsl', 'textsc', 'textrm', 'textnormal']:
-                    field_value_processed = re.sub(r'\\%s\s*\{(.*?)\}' % tex_cmd, r'\1', field_value_processed)
-                field_value_processed = re.sub(r'\\[a-zA-Z@]+(?!\w)', '', field_value_processed) 
+                    remaining_part = re.sub(r'\\%s\s*\{(.*?)\}' % tex_cmd, r'\1', remaining_part)
+                remaining_part = re.sub(r'\\[a-zA-Z@]+(?!\w)', '', remaining_part)
+                processed_parts.append(remaining_part)
                 
-                current_entry[field_name] = field_value_processed.strip()
+                # Join all processed parts back together
+                final_value = "".join(processed_parts)
+                current_entry[field_name] = final_value.strip()
+                # ================================================================
+                # END: Replaced section
+                # ================================================================
         
         if bib_key:
             parsed_entries[bib_key] = current_entry
