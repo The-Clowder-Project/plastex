@@ -3,6 +3,12 @@ name: thmenv
 {% set _ = obj.local_footnotes %}
 {# Preprocess footnotes within this theorem for potential mark compression #}
 {% set _ = obj.preprocess_footnotes_for_compression() %}
+{%- if obj.thmName == "warning" -%}
+<img src="/static/images/dbend.svg" class="warning-test">
+<div class="gogogo-text gogogo-start-1">ゴ</div>
+<div class="gogogo-text gogogo-start-2">ゴ</div>
+<div class="gogogo-text gogogo-start-3">ゴ</div>
+{%- endif -%}
 <div class="env-{{ obj.thmName }}-header"><a class="environment-identifier" href="/tag/{{ obj.userdata['tag'] }}">{{ obj.caption }} <span data-tag="{{ obj.userdata['tag'] }}">{{ obj.ref }}</span><span class="triangleright"> ▶ </span><span class="named">{{ obj.title }}</span></a></div>
 <article class="env-{{ obj.thmName }}" id="{{ obj.userdata['tag'] }}">
   {# --- Renders the heading --- #}
@@ -34,6 +40,11 @@ name: thmenv
   {% endif %}
 </article> {# End of the thmenv article #}
 <div class="env-{{ obj.thmName }}-footer"></div>
+{%- if obj.thmName == "warning" -%}
+<div class="gogogo-text gogogo-end-1">ゴ</div>
+<div class="gogogo-text gogogo-end-2">ゴ</div>
+<div class="gogogo-text gogogo-end-3">ゴ</div>
+{%- endif -%}
 
 name: proof
 {# Eagerly compute local_footnotes to ensure numbers are set on footnote objects before their marks are rendered #}
