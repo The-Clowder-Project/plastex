@@ -56,3 +56,9 @@ name: bgroup
 
 name: egroup
 {{- '}' -}}
+
+name: envwebgif
+<div class="webgif">{{ obj }}</div>
+
+name: webgif
+<img src="/static/gifs/{{ obj }}" class="webgifimg">

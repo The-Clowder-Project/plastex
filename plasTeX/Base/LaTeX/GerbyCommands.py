@@ -28,6 +28,19 @@ class envtinysize(Environment):
     """
     args = ''
 
+class envwebgif(Environment):
+    """
+    A custom LaTeX environment.
+    """
+    args = ''
+
+class palign(Array):
+    """
+    A custom environment for aligning equations with tags on the right.
+    It digests its content into a structured list of rows and cells.
+    """
+    pass
+
 class ProofBox(Command):
     """
     A custom LaTeX command \ProofBox{content}.
@@ -89,9 +102,8 @@ class ptag(Command):
     """
     args = 'self'
 
-class palign(Array):
+class webgif(Command):
     """
-    A custom environment for aligning equations with tags on the right.
-    It digests its content into a structured list of rows and cells.
+    A simple command \webgif{...} that just holds its content.
     """
-    pass
+    args = 'self'
