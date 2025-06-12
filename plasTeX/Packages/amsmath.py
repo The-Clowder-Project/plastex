@@ -8,6 +8,7 @@ from plasTeX.Base.LaTeX.Math import math, MathEnvironmentPre
 
 from plasTeX import Tokenizer
 from plasTeX.Logging import getLogger
+from plasTeX.Base.LaTeX.Breaking import NewLine as BaseNewLine
 
 deflog = getLogger('parse.definitions')
 

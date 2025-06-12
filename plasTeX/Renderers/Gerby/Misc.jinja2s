@@ -1,8 +1,3 @@
-name: egroup
-
-name: bgroup
-{{ obj }}
-
 name: tableofcontents input @vobeyspaces @noligs def protect let \
       newcommand hfill hline openout renewcommand write hspace appendix \
       global noindent include markboth setcounter refstepcounter \
@@ -55,3 +50,9 @@ name: itemstar
 
 name: textdbend
 <span class="textdbend-container"><span class="textdbend-content"><img alt="Dangerous Bend Symbol" src="/static/images/dbend.svg">
+
+name: bgroup
+{{- '{' -}}
+
+name: egroup
+{{- '}' -}}
