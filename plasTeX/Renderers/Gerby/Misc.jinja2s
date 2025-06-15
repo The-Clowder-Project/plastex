@@ -52,10 +52,9 @@ name: textdbend
 <span class="textdbend-container"><span class="textdbend-content"><img alt="Dangerous Bend Symbol" class="textdbend-image" src="/static/images/dbend.svg">
 
 name: bgroup
-{{- '{' -}}
+{{- obj -}}
 
 name: egroup
-{{- '}' -}}
 
 name: envwebgif
 <div class="webgif">{{ obj }}</div>
