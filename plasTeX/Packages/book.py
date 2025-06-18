@@ -13,13 +13,18 @@ def ProcessOptions(options, document):
     # Level 3: 1a(i), 1a(ii), 1a(iii)...
     context.newcounter('enumiii', resetby='enumii', format='${theenumii}(${enumiii.roman})')
     # Level 4: 1a(i)A, 1a(i)B, ...
-    context.newcounter('enumiv', resetby='enumiii', format='${theenumiii}${enumiv.Alph}')
+    context.newcounter('enumiv', resetby='enumiii', format='${theenumiii}${enumiv.Roman}')
 
     # And now, you must define the `theenum...` commands that are used in the formats.
     context.newcommand('theenumi', 0, r'\arabic{enumi}')
     context.newcommand('theenumii', 0, r'\theenumi\alph{enumii}')
     context.newcommand('theenumiii', 0, r'\theenumii(\roman{enumiii})')
-    context.newcommand('theenumiv', 0, r'\theenumiii\Alph{enumiv}')
+    context.newcommand('theenumiv', 0, r'\theenumiii\Roman{enumiv}')
+    # Also define commands for just the local part of the counter
+    context.newcommand('theenumi_part', 0, r'\arabic{enumi}')
+    context.newcommand('theenumii_part', 0, r'\alph{enumii}')
+    context.newcommand('theenumiii_part', 0, r'\roman{enumiii}')
+    context.newcommand('theenumiv_part', 0, r'\Roman{enumiv}')
     #context.newcounter('enumi')
     #context.newcounter('enumii', resetby='enumi')
     #context.newcounter('enumiii', resetby='enumii')

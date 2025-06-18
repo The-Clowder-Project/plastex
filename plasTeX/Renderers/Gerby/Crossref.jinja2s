@@ -2,25 +2,8 @@ name: ref
 <a href="/tag/{{ here.idref.label.userdata['tag'] }}" data-tag="{{ here.idref.label.userdata['tag'] }}">{{ here.idref.label.ref }}</a>
 
 name: cref Cref
-{#-
-  Defines a reusable macro to generate the hyperlink.
-  This avoids repeating the long <a> tag multiple times.
-  - ARGS:
-    - ref_obj: The object containing the reference details (here.idref.label).
-    - display_text: The text content that should appear inside the link.
--#}
-{%- macro ref_link(ref_obj, display_text) -%}
-    <a href="/tag/{{ ref_obj.userdata['tag'] }}" data-tag="{{ ref_obj.userdata['tag'] }}">{{ display_text }}</a>
-{%- endmacro -%}
-
-{#- Main conditional logic for rendering the reference -#}
-{%- if here.idref and here.idref.label and here.idref.label.ref is not none -%}
-    {%- set refname = here.refname() -%}
-    {%- if refname in ["Enumi", "Enumii", "Enumiii", "Enumiv"] -%}
-        {{ ref_link(here.idref.label, 'Item ' ~ here.idref.label.ref) }}
-    {%- else -%}
-        {{ ref_link(here.idref.label, refname ~ ' ' ~ here.idref.label.ref) }}
-    {%- endif -%}
+{%- if here.idref.label.ref is not none -%}
+    <a href="/tag/{{ here.idref.label.userdata['tag'] }}" data-tag="{{ here.idref.label.userdata['tag'] }}">{{ here.refname() }} {{ here.idref.label.ref }}</a>
 {%- else -%}
     <a style="cursor: pointer;" tabindex="0" role="button" data-trigger="focus" data-placement="bottom" data-toggle="popover" title="<span class=no-reference-popover-title>Future Reference</span>" data-html="true" data-content="<div class=no-reference-popover-content>This is a reference to something which is not yet available in the Clowder Project.</div>"><img class="question-svg" src="/static/images/question.svg" alt="Unresolved reference"></a>
 {%- endif -%}

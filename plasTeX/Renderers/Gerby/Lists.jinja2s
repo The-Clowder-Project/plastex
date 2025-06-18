@@ -17,50 +17,38 @@ name: description
 </dl>
 
 name: item
-{%- set to_alpha = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'] -%}
-{%- set to_roman = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi', 'xii', 'xiii', 'xiv', 'xv', 'xvi', 'xvii', 'xviii', 'xix', 'xx'] -%}
-{%- set to_Roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'] -%}
 <li
-{%- if obj.attributes['term'] %} class="description-item" data-marker="{{- obj.attributes['term'] | striptags -}}" {# For description lists, the term itself is the marker #}
-{%- elif obj.ref %} class="enumerate-item" {# For enumerated lists with a counter #}
-{%- else %} class="itemize-item" {# For itemize or other lists without a .ref #}
-{%- endif %}
-{%- if obj.userdata['tag'] %} id="{{- obj.userdata['tag'] -}}"{% endif -%} {# Gerby tag for linking #}
+  {%- if obj.ref %}
+    class="enumerate-item" {# For enumerated lists with a counter #}
+  {%- else %}
+    class="itemize-item" {# For itemize or other lists without a .ref #}
+  {%- endif %}
+  {%- if obj.userdata['tag'] %}
+    id="{{- obj.userdata['tag'] -}}"
+  {% endif -%} {# Gerby tag for linking #}
 >
-  <span class="counter">
-    {# The link target uses the Gerby tag if available, otherwise the item's own DOM id as a fallback #}
-    {%- if obj.parentNode.nodeName == "itemize" -%}
-      <span class="counter-link" href="/tag/{{- obj.userdata['tag'] if obj.userdata['tag'] else obj.id -}}"><span class="counter-inner-no-tag">•</span></span>
-    {%- else %}
-      <a class="counter-link" href="/tag/{{- obj.userdata['tag'] if obj.userdata['tag'] else obj.id -}}">
-        <span
-          {%- if obj.ref %} class="counter-inner"        {# For enumerated lists with a counter #}
-          {%- else %}       class="counter-inner-no-tag" {# For itemize or other lists without a .ref #}
-          {%- endif %}
-        >
-          {%- if obj.parentNode.nodeName == "enumerate" -%}
-            {%- if obj.ref -%}
-              <span data-tag="{{ obj.userdata['tag'] }}">
-              {%- if obj.counter == 'enumi' -%}
-                  {{- obj.ref -}}.
-              {%- elif obj.counter == 'enumii' and obj.position <= to_alpha|length -%}
-                  ({{- to_alpha[obj.position - 1] -}})
-              {%- elif obj.counter == 'enumiii' and obj.position <= to_roman|length -%}
-                  ({{- to_roman[obj.position - 1] -}})
-              {%- elif obj.counter == 'enumiv' and obj.position <= to_Roman|length -%}
-                  ({{- to_Roman[obj.position - 1] -}})
-              {%- else -%}
-                  {{- obj.ref -}}.
-              {%- endif -%}
-              </span>
-            {%- endif -%}
+<span class="counter">
+  {# The link target uses the Gerby tag if available, otherwise the item's own DOM id as a fallback #}
+  {%- if obj.parentNode.nodeName == "itemize" -%}
+    <span class="counter-link" href="/tag/{{- obj.userdata['tag'] if obj.userdata['tag'] else obj.id -}}"><span class="counter-inner-no-tag">•</span></span>
+  {%- else %}
+    <a class="counter-link" href="/tag/{{- obj.userdata['tag'] if obj.userdata['tag'] else obj.id -}}">
+      <span
+        {%- if obj.ref %} class="counter-inner"        {# For enumerated lists with a counter #}
+        {%- else %}       class="counter-inner-no-tag" {# For itemize or other lists without a .ref #}
+        {%- endif %}
+      >
+        {%- if obj.ref_part -%}
+          {%- if obj.counter == 'enumi' -%}
+            <span data-tag="{{ obj.userdata['tag'] }}">{{- obj.ref -}}.</span>
           {%- else -%}
-            •
+            <span data-tag="{{ obj.userdata['tag'] }}">({{- obj.ref_part -}})</span>
           {%- endif -%}
-        </span>
-      </a>
-    {%- endif -%}
-  </span>
-  {# The actual content of the list item, wrapped for potential styling #}
-  <span class="item-content">{{- obj -}}</span>
+        {%- endif -%}
+      </span>
+    </a>
+  {%- endif -%}
+</span>
+{# The actual content of the list item, wrapped for potential styling #}
+<span class="item-content">{{- obj -}}</span>
 </li>

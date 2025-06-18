@@ -24,6 +24,7 @@ class List(Environment):
         counter = 'enumi'
         position = 0
         forcePars = True
+        ref_part = None
 
         def invoke(self, tex):
             """ Set up counter for this list depth """
@@ -33,6 +34,13 @@ class List(Environment):
             except (KeyError, IndexError):
                 pass
             return Command.invoke(self, tex)
+
+        def postParse(self, tex):
+            # Create a property for just the local part of the counter
+            the_part_command_name = 'the' + self.counter + '_part'
+            if the_part_command_name in self.ownerDocument.context:
+                self.ref_part = self.ownerDocument.createElement(the_part_command_name).expand(tex)
+            super(List.item, self).postParse(tex)
 
         def digest(self, tokens):
             """

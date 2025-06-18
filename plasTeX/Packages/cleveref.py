@@ -42,13 +42,10 @@ class cref(CleverRef):
             return ""
         if isinstance(name, tuple):
             name = name[0]
-        #return name[0].lower() + name[1:]
-        return name[0].upper() + name[1:]
-        #if (name[0].upper() + name[1:]) == "Enumi":
-        #    finalName = "Item"
-        #else:
-        #    finalName = name[0].upper() + name[1:]
-        #return finalName
+        finalName = name[0].upper() + name[1:]
+        if (finalName == "Enumi" or finalName == "Enumii" or finalName == "Enumiii" or finalName == "Enumiv"):
+            finalName = "Item"
+        return finalName
 
 class Cref(cref):
     pass
