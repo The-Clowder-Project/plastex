@@ -64,3 +64,20 @@ name: webgif
 
 name: audio
 <audio controls><source src="/static/audios/{{ obj }}" type="audio/mpeg"></audio> 
+
+name: warningsign
+<img src="/static/images/warning.svg" width="20px" style="margin-top:-5px">
+
+name: doubleepigraph
+<div class="epigraph-container">
+  <div class="epigraph">
+    <p>{{ obj.attributes.epigraph_one }}</p>
+    <div class="line"></div>
+    <p class="author-left">{{ obj.attributes.author_one }}</p>
+  </div>
+  <div class="epigraph">
+    <p>{{ obj.attributes.epigraph_two }}</p>
+    <div class="line"></div>
+    <p class="author-right">{{ obj.attributes.author_two }}</p>
+  </div>
+</div>

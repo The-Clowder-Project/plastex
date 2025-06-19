@@ -113,3 +113,15 @@ class audio(Command):
     A simple command \webgif{...} that just holds its content.
     """
     args = 'self'
+
+class warningsign(Command):
+    """
+    A custom LaTeX command \warningsign.
+    """
+    args = ''
+
+class doubleepigraph(Command):
+    """
+    A custom LaTeX command \warningsign.
+    """
+    args = 'epigraph_one author_one epigraph_two author_two'
