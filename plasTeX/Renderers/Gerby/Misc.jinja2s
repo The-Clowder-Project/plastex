@@ -20,13 +20,13 @@ name: xspace
 &nbsp;
 
 name: scalemath
-<div class="scalemath"><img src="/static/scalemath-images/scalemath-{{ obj }}.svg"></div>
+<div class="equation"><div class="scalemath"><img src="/static/scalemath-images/scalemath-{{ obj }}.svg"></div></div>
 
 name: webcompile
-<div class="webcompile"><img src="/static/webcompile-images/webcompile-{{ obj }}.svg"></div>
+<div class="equation"><div class="webcompile"><img src="/static/webcompile-images/webcompile-{{ obj }}.svg"></div></div>
 
 name: tikzcdid
-<div class="tikz-cd"><img src="/static/tikzcd-images/tikzcd-{{ obj }}.svg"></div>
+<div class="equation"><div class="tikz-cd"><img src="/static/tikzcd-images/tikzcd-{{ obj }}.svg"></div></div>
 
 name: Gape
 
@@ -61,3 +61,6 @@ name: envwebgif
 
 name: webgif
 <img src="/static/gifs/{{ obj }}" class="webgifimg">
+
+name: audio
+<audio controls><source src="/static/audios/{{ obj }}" type="audio/mpeg"></audio> 

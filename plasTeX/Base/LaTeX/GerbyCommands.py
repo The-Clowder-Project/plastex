@@ -107,3 +107,9 @@ class webgif(Command):
     A simple command \webgif{...} that just holds its content.
     """
     args = 'self'
+
+class audio(Command):
+    """
+    A simple command \webgif{...} that just holds its content.
+    """
+    args = 'self'
