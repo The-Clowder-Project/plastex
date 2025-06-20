@@ -991,8 +991,14 @@ class VerbatimEnvironment(NoCharSubEnvironment):
         endlength = len(endpattern)
         endlength2 = len(endpattern2)
         # Iterate through tokens until the endpattern is found
+        tok_number = 0
         for tok in tex:
-            tokens.append(tok)
+            if (tok_number == 0 and tok == "\n"):
+                # Don't append the initial newline
+                log.info("Verbatim initial newline; print nothing")
+                tok_number = 1
+            else:
+                tokens.append(tok)
             if len(tokens) >= endlength:
                 if tokens[-endlength:] == endpattern:
                     tokens = tokens[:-endlength]
