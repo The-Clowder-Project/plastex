@@ -120,6 +120,12 @@ class warningsign(Command):
     """
     args = ''
 
+class IPA(Command):
+    """
+    A custom LaTeX command \IPA.
+    """
+    args = 'self'
+
 class doubleepigraph(Command):
     """
     A custom LaTeX command \doubleepigraph.

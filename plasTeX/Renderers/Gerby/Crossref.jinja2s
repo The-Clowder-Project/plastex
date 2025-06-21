@@ -3,7 +3,11 @@ name: ref
 
 name: cref Cref
 {%- if here.idref.label.ref is not none -%}
+  {%- if here.refname() == "Chapter" -%}
+    <a href="/tag/{{ here.idref.label.userdata['tag'] }}" data-tag="{{ here.idref.label.userdata['tag'] }}">{{ here.refname() }} {{ here.idref.label.ref }}: {{ here.idref.label.title }}</a>
+  {%- else -%}
     <a href="/tag/{{ here.idref.label.userdata['tag'] }}" data-tag="{{ here.idref.label.userdata['tag'] }}">{{ here.refname() }} {{ here.idref.label.ref }}</a>
+  {%- endif -%}
 {%- else -%}
-    <a style="cursor: pointer;" tabindex="0" role="button" data-trigger="focus" data-placement="bottom" data-toggle="popover" title="<span class=no-reference-popover-title>Future Reference</span>" data-html="true" data-content="<div class=no-reference-popover-content>This is a reference to something which is not yet available in the Clowder Project.</div>"><img class="question-svg" src="/static/images/question.svg" alt="Unresolved reference"></a>
+  <a style="cursor: pointer;" tabindex="0" role="button" data-trigger="focus" data-placement="bottom" data-toggle="popover" title="<span class=no-reference-popover-title>Future Reference</span>" data-html="true" data-content="<div class=no-reference-popover-content>This is a reference to something which is not yet available in the Clowder Project.</div>"><img class="question-svg" src="/static/images/question.svg" alt="Unresolved reference"></a>
 {%- endif -%}

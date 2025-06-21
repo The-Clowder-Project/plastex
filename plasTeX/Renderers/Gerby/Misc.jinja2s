@@ -81,3 +81,6 @@ name: doubleepigraph
     <p class="author-right">{{ obj.attributes.author_two }}</p>
   </div>
 </div>
+
+name: IPA
+<span class="brill">{{ obj }}</span>
