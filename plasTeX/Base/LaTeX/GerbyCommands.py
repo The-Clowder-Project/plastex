@@ -122,6 +122,6 @@ class warningsign(Command):
 
 class doubleepigraph(Command):
     """
-    A custom LaTeX command \warningsign.
+    A custom LaTeX command \doubleepigraph.
     """
     args = 'epigraph_one author_one epigraph_two author_two'
