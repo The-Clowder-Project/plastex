@@ -957,6 +957,25 @@ class VerbatimEnvironment(NoCharSubEnvironment):
     blockType = True
     captionable = True
 
+    def digest(self, tokens):
+        """
+        First, digest the content of the verbatim environment as usual.
+        Then, perform string replacements on the resulting text content.
+        """
+        # Let the parent class digest the verbatim content first
+        super(VerbatimEnvironment, self).digest(tokens)
+
+        # Get the text content of the node
+        content = self.textContent
+
+        # Perform the desired replacements
+        new_content = content.replace('\\webleft', '\\left')
+        new_content = new_content.replace('\\webright', '\\right')
+
+        # Clear the old child nodes and append the new, modified text
+        self.childNodes[:] = []
+        self.appendChild(self.ownerDocument.createTextNode(new_content))
+
     def invoke(self, tex):
         """
         We enter verbatim mode by setting all category codes to CC_LETTER
