@@ -110,7 +110,7 @@ def simple_bib_parser(bib_file_path):
                         non_math_part = re.sub(r'\\%s\s*\{(.*?)\}' % tex_cmd, r'\1', non_math_part)
                     
                     # Strip other simple commands from the non-math part
-                    non_math_part = re.sub(r'\\[a-zA-Z@]+(?!\w)', '', non_math_part)
+                    non_math_part = re.sub(r'\\(?!href\b)[a-zA-Z@]+(?!\w)', '', non_math_part)
                     processed_parts.append(non_math_part)
                     
                     # Part 2: Process the math part itself, keeping commands
@@ -134,7 +134,7 @@ def simple_bib_parser(bib_file_path):
                 remaining_part = field_value_processed[last_end:]
                 for tex_cmd in ['emph', 'textit', 'textbf', 'texttt', 'textsl', 'textsc', 'textrm', 'textnormal']:
                     remaining_part = re.sub(r'\\%s\s*\{(.*?)\}' % tex_cmd, r'\1', remaining_part)
-                remaining_part = re.sub(r'\\[a-zA-Z@]+(?!\w)', '', remaining_part)
+                remaining_part = re.sub(r'\\(?!href\b)[a-zA-Z@]+(?!\w)', '', remaining_part)
                 processed_parts.append(remaining_part)
                 
                 # Join all processed parts back together
