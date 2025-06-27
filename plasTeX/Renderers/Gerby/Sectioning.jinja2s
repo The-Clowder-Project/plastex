@@ -2,26 +2,21 @@ name: part chapter
 <h1 id="{{ obj.id }}" class="tex-{{ obj.nodeName }}"><span data-tag="{{ obj.userdata['tag'] }}">{{ obj.ref }}</span> {{ obj.title }}</h1>
 {{ obj }}
 
-
 name: section
 <h2 id="{{ obj.id }}" class="tex-{{ obj.nodeName }}"><span data-tag="{{ obj.userdata['tag'] }}">{{ obj.ref }}</span> {{ obj.title }}</h2>
 {{ obj }}
-
 
 name: subsection
 <h3 id="{{ obj.id }}" class="tex-{{ obj.nodeName }}"><span data-tag="{{ obj.userdata['tag'] }}">{{ obj.ref }}</span> {{ obj.title }}</h3>
 {{ obj }}
 
-
 name: subsubsection
 <h4 id="{{ obj.id }}" class="tex-{{ obj.nodeName }}"><span data-tag="{{ obj.userdata['tag'] }}">{{ obj.ref }}</span> {{ obj.title }}</h4>
 {{ obj }}
 
-
 name: paragraph
 <h5>{{ obj.title }}</h5>
 {{ obj }}
-
 
 name: subparagraph, subsubparagraph
 <h6 id="{{ obj.id }}" class="tex-{{ obj.nodeName }}"><span data-tag="{{ obj.userdata['tag'] }}">{{ obj.ref }}</span> {{ obj.title }}</h6>

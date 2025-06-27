@@ -18,25 +18,25 @@ name: description
 
 name: item
 <li
-  {%- if obj.ref %}
-    class="enumerate-item" {# For enumerated lists with a counter #}
-  {%- else %}
-    class="itemize-item" {# For itemize or other lists without a .ref #}
-  {%- endif %}
-  {%- if obj.userdata['tag'] %}
+  {%- if obj.ref -%}
+    class="enumerate-item" {#- For enumerated lists with a counter -#}
+  {%- else -%}
+    class="itemize-item" {#- For itemize or other lists without a .ref -#}
+  {%- endif -%}
+  {%- if obj.userdata['tag'] -%}
     id="{{- obj.userdata['tag'] -}}"
-  {% endif -%} {# Gerby tag for linking #}
+  {% endif -%} {#- Gerby tag for linking -#}
 >
 <span class="counter">
-  {# The link target uses the Gerby tag if available, otherwise the item's own DOM id as a fallback #}
+  {#- The link target uses the Gerby tag if available, otherwise the item's own DOM id as a fallback -#}
   {%- if obj.parentNode.nodeName == "itemize" -%}
     <span class="counter-link" href="/tag/{{- obj.userdata['tag'] if obj.userdata['tag'] else obj.id -}}"><span class="counter-inner-no-tag">•</span></span>
-  {%- else %}
+  {%- else -%}
     <a class="counter-link" href="/tag/{{- obj.userdata['tag'] if obj.userdata['tag'] else obj.id -}}">
       <span
-        {%- if obj.ref %} class="counter-inner"        {# For enumerated lists with a counter #}
-        {%- else %}       class="counter-inner-no-tag" {# For itemize or other lists without a .ref #}
-        {%- endif %}
+        {%- if obj.ref -%} class="counter-inner"        {#- For enumerated lists with a counter -#}
+        {%- else -%}       class="counter-inner-no-tag" {#- For itemize or other lists without a .ref -#}
+        {%- endif -%}
       >
         {%- if obj.ref_part -%}
           {%- if obj.counter == 'enumi' -%}
@@ -49,6 +49,6 @@ name: item
     </a>
   {%- endif -%}
 </span>
-{# The actual content of the list item, wrapped for potential styling #}
+{#- The actual content of the list item, wrapped for potential styling -#}
 <span class="item-content">{{- obj -}}</span>
 </li>

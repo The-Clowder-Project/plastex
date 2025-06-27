@@ -19,6 +19,7 @@ import json
 log = plasTeX.Logging.getLogger()
 gerby_log = plasTeX.Logging.getLogger('GerbyRenderer')
 gerby_log.setLevel(plasTeX.Logging.DEBUG) # Ensure Gerby debug messages are shown
+status = plasTeX.Logging.getLogger('status')
 
 def simple_bib_parser(bib_file_path):
     """
@@ -259,6 +260,78 @@ def willItBeWhitespace(node):
   # A paragraph is whitespace if all it contains is whitespace
     return all([willItBeWhitespace(child) for child in node.childNodes])
 
+class StaticNode(object):
+    """
+    Object to assist in rendering files
+
+    This object is used to wrap objects that need to have a layout
+    file wrapped around them.  The layout wrapper generally includes
+    all of the navigation links, table of contents, etc.
+
+    This is simply a proxy object that returns the attributes of
+    the given object.  The exceptions is __str__
+    which simply returns the rendered string that was passed in.
+    This allows you to use two templates: one that renders the content
+    and another that is wrapped around any node that generates a
+    file.  Without this, you can easily run into infinite recursion
+    problems.
+
+    """
+    def __init__(self, obj, content):
+        """
+        Initialize the static node
+
+        Arguments:
+        obj -- the object that contains navigation and table of
+            contents information
+        content -- the rendered object in a  string
+
+        """
+        self._node_data = (obj, content)
+    def __getattribute__(self, name):
+        if name in ['_node_data','__str__']:
+            return object.__getattribute__(self, name)
+        return getattr(self._node_data[0], name)
+
+    def __str__(self):
+        return self._node_data[1]
+
+class StaticNode(object):
+    """
+    Object to assist in rendering files
+
+    This object is used to wrap objects that need to have a layout
+    file wrapped around them.  The layout wrapper generally includes
+    all of the navigation links, table of contents, etc.
+
+    This is simply a proxy object that returns the attributes of
+    the given object.  The exceptions is __str__
+    which simply returns the rendered string that was passed in.
+    This allows you to use two templates: one that renders the content
+    and another that is wrapped around any node that generates a
+    file.  Without this, you can easily run into infinite recursion
+    problems.
+
+    """
+    def __init__(self, obj, content):
+        """
+        Initialize the static node
+
+        Arguments:
+        obj -- the object that contains navigation and table of
+            contents information
+        content -- the rendered object in a  string
+
+        """
+        self._node_data = (obj, content)
+    def __getattribute__(self, name):
+        if name in ['_node_data','__str__']:
+            return object.__getattribute__(self, name)
+        return getattr(self._node_data[0], name)
+
+    def __str__(self):
+        return self._node_data[1]
+
 class GerbyRenderable(Renderable):
   @property
   def filenameoverride(self):
@@ -304,6 +377,145 @@ class GerbyRenderable(Renderable):
         return tag + "." + self.nodeName
 
     raise AttributeError
+
+  def __str__(self):
+    """
+    Invoke the rendering process on all of the child nodes.
+    """
+    r = Node.renderer
+
+    # Short circuit macros that have unicode equivalents
+    uni = self.str
+    if uni is not None:
+        return r.outputType(r.textDefault(uni))
+
+    # If we don't have childNodes, then we're done
+    if not self.hasChildNodes():
+        return ''
+
+    # At the very top level, only render the DOCUMENT_LEVEL node
+    if self.nodeType == Node.DOCUMENT_NODE:
+        childNodes = [x for x in self.childNodes
+                        if x.level == Node.DOCUMENT_LEVEL]
+    else:
+        childNodes = self.childNodes
+
+    # Render all child nodes
+    s = []
+    for child in childNodes:
+
+        # Short circuit text nodes
+        if child.nodeType == Node.TEXT_NODE:
+            s.append(r.textDefault(child))
+            continue
+
+        # Short circuit macros that have unicode equivalents
+        uni = child.str
+        if uni is not None:
+            s.append(r.textDefault(uni))
+            continue
+
+        # START OF MODIFICATION
+        if child.filename:
+            if child.level >= Node.ENDSECTIONS_LEVEL:
+                ancestor = child.parentNode
+                while ancestor is not None and ancestor.level >= Node.ENDSECTIONS_LEVEL:
+                    ancestor = ancestor.parentNode
+                
+                if ancestor is not None and ancestor.filename:
+                    child.ownerDocument.userdata['tag_ancestor_map'][child.filename] = ancestor.filename
+        # END OF MODIFICATION
+
+        layouts, names = [], []
+        nodeName = child.nodeName
+        modifier = None
+
+        # Does the macro specify an alternative templateName
+        templateName = getattr(child, 'templateName', None)
+        # Does the macro have a modifier (i.e. '*')
+        if child.attributes:
+            modifier = child.attributes.get('*modifier*')
+
+        if child.filename:
+            # Force footnotes to be cached
+            if hasattr(child, 'footnotes'):
+                _ = child.footnotes
+
+            status.info(' [ %s ', child.filename)
+
+            # Filename and templateName
+            if templateName:
+                layouts.append('%s-layout' % (templateName))
+                if modifier:
+                    layouts.append('%s-layout%s' % (templateName, modifier))
+
+            # Filename and modifier
+            if modifier:
+                layouts.append('%s-layout%s' % (nodeName, modifier))
+
+            # Add nodeName to list
+            layouts.append('%s-layout' % nodeName)
+
+        # templateName
+        if templateName:
+            names.append(templateName)
+            if modifier:
+                names.append('%s%s' % (templateName, modifier))
+        # Modifier
+        if modifier:
+            names.append('%s%s' % (nodeName, modifier))
+
+        names.append(nodeName)
+        layouts.append('default-layout')
+
+        # Locate the rendering callable, and call it with the
+        # current object (i.e. `child`) as its argument.
+        func = r.find(names, r.default)
+        val = func(child)
+
+        # If a plain string is returned, we have no idea what
+        # the encoding is, but we'll make a guess.
+        if type(val) is not str:
+            log.warning('The renderer for %s returned a non-unicode string.  Using the default input encoding.' % type(child).__name__)
+            val = str(val)
+
+        # If the content should go to a file, write it and go
+        # to the next child.
+        if child.filename:
+            filename = child.filename
+
+            # Create any directories as needed
+            directory = os.path.dirname(filename)
+            if directory and not os.path.isdir(directory):
+                os.makedirs(directory)
+
+            # Add the layout wrapper if there is one
+            func = r.find(layouts)
+            if func is not None:
+                val = func(StaticNode(child, val))
+
+                # If a plain string is returned, we have no idea what
+                # the encoding is, but we'll make a guess.
+                if type(val) is not str:
+                    log.warning('The renderer for %s returned a non-unicode string.  Using the default input encoding.' % type(child).__name__)
+                    val = str(val)
+
+            # Write the file content
+
+            enc = child.config['files']['output-encoding']
+            with open(filename, 'w', encoding=enc) as f:
+                f.write(val)
+
+            status.info(' ] ')
+
+            # only continue when it is not supposed to propagate to output higher up
+            if "propagate" not in child.userdata or not child.userdata["propagate"]:
+              continue
+
+        # Append the resultant object to the output
+        s.append(val)
+
+    return r.outputType(''.join(s))
 
   @property
   def local_footnotes(self):
@@ -623,6 +835,12 @@ class Gerby(_Renderer):
         resrc.alter(renderer=self, rendererName='gerby', document=document, target=buildDir)
 
   def cleanup(self, document, files, postProcess=None):
+    # START OF MODIFICATION
+    ancestor_map = document.userdata.get('tag_ancestor_map', {})
+    if ancestor_map:
+        with open("tag_ancestors.json", "w") as f:
+            json.dump(ancestor_map, f, indent=2)
+    # END OF MODIFICATION
     res = _Renderer.cleanup(self, document, files, postProcess=postProcess)
     return res
 
@@ -657,7 +875,6 @@ class Gerby(_Renderer):
           gerby_log.warning(f"No .bib file found in output directory for direct parsing by _ensure_bibliography_processed (expected e.g. bibliography.bib).")
           document.userdata['_direct_bib_data'] = {}
 
-
   def render(self, document):
     gerby_log.debug(f"Gerby.render() CALLED. Current CWD: {os.getcwd()}")
     gerby_log.debug(f"  Working-dir from userdata: {document.userdata.get('working-dir', 'Not Set')}")
@@ -666,6 +883,10 @@ class Gerby(_Renderer):
     bibcites_at_start = document.userdata.getPath('bibliography/bibcites', {})
     gerby_log.debug(f"  BEFORE Gerby processing: userdata bibitems keys: {list(bibitems_at_start.keys())}")
     gerby_log.debug(f"  BEFORE Gerby processing: userdata bibcites keys: {list(bibcites_at_start.keys())}")
+
+    # START OF MODIFICATION
+    document.userdata['tag_ancestor_map'] = {}
+    # END OF MODIFICATION
 
     loadTags(document)
     copyBibliographies(document) 
@@ -701,8 +922,6 @@ class Gerby(_Renderer):
       json.dump(document.context.meta, f)
 
 Renderer = Gerby
-
-
 def outputTree(node, depth=0):
   if hasattr(node, "id") and node.id[0:2] != "a0":
     print("-" * depth + node.nodeName + ": " + node.id + ", level = " + str(depth))
