@@ -11,24 +11,43 @@ class includegraphics(Command):
     captionable = True
 
     def invoke(self, tex):
+        # This parses the arguments like [width=...] and {file...}
+        # into self.attributes
         res = Command.invoke(self, tex)
 
-        f = self.attributes['file']
+        f = self.attributes.get('file')
+        if not f:
+            return [] # No file, so render nothing
 
-        if f:
-            # Extract just the filename
-            filename = os.path.basename(f) # This gives 'hundar.pdf'
+        # --- Your Custom Path Logic ---
+        # 1. Get the base filename (e.g., "hundar.pdf")
+        basename = os.path.basename(f)
+        # 2. Get the filename and its extension
+        filename_no_ext, ext = os.path.splitext(basename)
 
-            # Construct the final desired path for the web server
-            final_path = f'/static/images/{filename}'
+        # 3. Conditionally change the extension
+        if ext.lower() == '.pdf':
+            # If it's a PDF, change the extension to .svg
+            final_filename = filename_no_ext + '.svg'
+        else:
+            # Otherwise, keep the original filename and extension
+            final_filename = basename
+        # 4. Store the final path in a new attribute for the template
+        self.final_src = os.path.join('/static/images/', final_filename)
+        # --- End Custom Path Logic ---
 
-            # Store this path in a new attribute on the node.
-            # The renderer will use this attribute.
-            self.final_src = final_path
+        # This tells plasTeX to NOT use the imager for this node.
+        self.imageoverride = None
 
-            # IMPORTANT: Nullify imageoverride to prevent plasTeX
-            # from trying to copy or process the original file path.
-            self.imageoverride = None
+        # Optionally handle other arguments like width
+        options = self.attributes.get('options', {})
+        if options and 'width' in options:
+            width_val = options['width']
+            # The value could be `\linewidth`, which we can map to CSS
+            if hasattr(width_val, 'source'):
+                self.style['width'] = width_val.source.replace('\\linewidth', '100%')
+            else:
+                self.style['width'] = str(width_val)
 
         return res
 
