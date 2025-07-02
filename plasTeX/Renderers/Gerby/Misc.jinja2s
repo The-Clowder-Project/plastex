@@ -84,3 +84,6 @@ name: doubleepigraph
 
 name: IPA
 <span class="brill">{{ obj }}</span>
+
+name: includegraphics
+<div class="figure"><img src="/static/pictures/{{ obj }}"></div>
