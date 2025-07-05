@@ -417,13 +417,16 @@ class GerbyRenderable(Renderable):
 
         # START OF MODIFICATION
         if child.filename:
-            if child.level >= Node.ENDSECTIONS_LEVEL:
+            if child.level >= Node.SUBSUBSECTION_LEVEL:
                 ancestor = child.parentNode
                 while ancestor is not None and ancestor.level >= Node.ENDSECTIONS_LEVEL:
                     ancestor = ancestor.parentNode
                 
                 if ancestor is not None and ancestor.filename:
                     child.ownerDocument.userdata['tag_ancestor_map'][child.filename] = ancestor.filename
+            immediate_parent = child.parentNode
+            if immediate_parent is not None and immediate_parent.filename:
+                child.ownerDocument.userdata['immediate_tag_ancestor_map'][child.filename] = immediate_parent.filename
         # END OF MODIFICATION
 
         layouts, names = [], []
@@ -837,8 +840,12 @@ class Gerby(_Renderer):
   def cleanup(self, document, files, postProcess=None):
     # START OF MODIFICATION
     ancestor_map = document.userdata.get('tag_ancestor_map', {})
+    immediate_tag_ancestor_map = document.userdata.get('immediate_tag_ancestor_map', {})
     if ancestor_map:
         with open("tag_ancestors.json", "w") as f:
+            json.dump(ancestor_map, f, indent=2)
+    if immediate_tag_ancestor_map:
+        with open("tag_ancestors_2.json", "w") as f:
             json.dump(ancestor_map, f, indent=2)
     # END OF MODIFICATION
     res = _Renderer.cleanup(self, document, files, postProcess=postProcess)
@@ -886,6 +893,7 @@ class Gerby(_Renderer):
 
     # START OF MODIFICATION
     document.userdata['tag_ancestor_map'] = {}
+    document.userdata['immediate_tag_ancestor_map'] = {}
     # END OF MODIFICATION
 
     loadTags(document)
