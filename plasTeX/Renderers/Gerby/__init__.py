@@ -425,7 +425,8 @@ class GerbyRenderable(Renderable):
                 if ancestor is not None and ancestor.filename:
                     child.ownerDocument.userdata['tag_ancestor_map'][child.filename] = ancestor.filename
             immediate_parent = child.parentNode
-            if immediate_parent is not None and immediate_parent.filename:
+            #if immediate_parent is not None and immediate_parent.filename:
+            if immediate_parent is not None:
                 child.ownerDocument.userdata['immediate_tag_ancestor_map'][child.filename] = immediate_parent.filename
         # END OF MODIFICATION
 
