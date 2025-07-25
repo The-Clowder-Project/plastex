@@ -131,3 +131,11 @@ class doubleepigraph(Command):
     A custom LaTeX command \doubleepigraph.
     """
     args = 'epigraph_one author_one epigraph_two author_two'
+
+class xspace(Command):
+    r"""
+    A placeholder node for the \xspace command.
+    The rendering logic is handled by the template.
+    """
+    # \xspace takes no arguments.
+    args = ''

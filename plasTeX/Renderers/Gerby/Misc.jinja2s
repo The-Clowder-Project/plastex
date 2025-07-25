@@ -39,9 +39,6 @@ name: envscriptsize
 name: envtinysize
 <div class="tinysize">{{ obj }}</div>
 
-name: textiff
-iff<span class="whitespace-span"> </span>
-
 name: itemstar
 <li class="itemize-item"><span class="counter"><span class="counter-inner-no-tag">(★)</span><span class="item-content">{{- obj -}}</span></li>
 
@@ -84,3 +81,16 @@ name: IPA
 
 name: includegraphics
 <div class="figure"><img style="width:100%;" src="{{ obj.final_src }}"></div>
+
+name: xspace
+{%- if obj.nextSibling[0] in ['.', ',', ';', ':', '?', '!', ')', ']', '}'] -%}
+{%- else -%}
+<span class="whitespace-span"> </span>
+{%- endif -%}
+
+name: textiff
+{%- if obj.nextSibling[0] in ['.', ',', ';', ':', '?', '!', ')', ']', '}'] -%}
+iff
+{%- else -%}
+iff<span class="whitespace-span"> </span>
+{%- endif -%}
