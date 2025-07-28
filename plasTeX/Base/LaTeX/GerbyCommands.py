@@ -47,6 +47,12 @@ class ProofBox(Command):
     """
     args = 'self'
 
+class SubProofBox(Command):
+    """
+    A custom LaTeX command \SubProofBox{content}.
+    """
+    args = 'self'
+
 class scalemath(Command):
     """
     A custom LaTeX command \scalemath{id}.

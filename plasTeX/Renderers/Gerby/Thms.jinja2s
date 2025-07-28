@@ -95,3 +95,6 @@ name: reference slogan history
 
 name: ProofBox
 <div class="proofbox">{{ obj }}</div>
+
+name: SubProofBox
+<div class="subproofbox">{{ obj }}</div>
