@@ -83,8 +83,14 @@ class Gape(Command):
     """
     args = '[one] [two]'
 
-class textiff(Command):
+class vs(Command):
+    r"""
+    A custom LaTeX command \vs.
     """
+    args = ''
+
+class textiff(Command):
+    r"""
     A custom LaTeX command \textiff.
     """
     args = ''

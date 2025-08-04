@@ -94,3 +94,10 @@ iff
 {%- else -%}
 iff<span class="whitespace-span"> </span>
 {%- endif -%}
+
+name: vs
+{%- if obj.nextSibling[0] in ['.', ',', ';', ':', '?', '!', ')', ']', '}'] -%}
+vs.
+{%- else -%}
+vs.<span class="whitespace-span"> </span>
+{%- endif -%}
