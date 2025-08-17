@@ -59,6 +59,12 @@ class scalemath(Command):
     """
     args = 'self'
 
+class webprooftree(Command):
+    """
+    A custom LaTeX command \webprooftree{id}.
+    """
+    args = 'self'
+
 class webcompile(Command):
     """
     A custom LaTeX command \webcompile{id}.
