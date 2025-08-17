@@ -25,6 +25,9 @@ name: webcompile
 name: tikzcdid
 <div class="equation"><div class="tikz-cd"><img src="/static/tikzcd-images/tikzcd-{{ obj }}.svg"></div></div>
 
+name: webprooftree
+<div class="equation"><div class="webprooftree"><img src="/static/webprooftree-images/webprooftree-{{ obj }}.svg"></div></div>
+
 name: Gape
 
 name: envsmallsize
