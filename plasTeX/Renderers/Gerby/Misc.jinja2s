@@ -28,6 +28,9 @@ name: tikzcdid
 name: webprooftree
 <div class="equation"><div class="webprooftree"><img src="/static/webprooftree-images/webprooftree-{{ obj }}.svg"></div></div>
 
+name: scalewebprooftree
+<div class="equation"><div class="scalewebprooftree"><img src="/static/scalewebprooftree-images/scalewebprooftree-{{ obj }}.svg"></div></div>
+
 name: Gape
 
 name: envsmallsize
