@@ -48,8 +48,14 @@ class ProofBox(Command):
     args = 'self'
 
 class SubProofBox(Command):
-    """
+    r"""
     A custom LaTeX command \SubProofBox{content}.
+    """
+    args = 'self'
+
+class SubSubProofBox(Command):
+    r"""
+    A custom LaTeX command \SubSubProofBox{content}.
     """
     args = 'self'
 
@@ -162,4 +168,23 @@ class xspace(Command):
     The rendering logic is handled by the template.
     """
     # \xspace takes no arguments.
+    args = ''
+
+class url(Command):
+    r"""
+    A simple command \url{...} that just holds its content.
+    It will be used as a delimiter inside the palign environment.
+    """
+    args = 'self'
+
+class less(Command):
+    """
+    A custom LaTeX command \less.
+    """
+    args = ''
+
+class greater(Command):
+    """
+    A custom LaTeX command \greater.
+    """
     args = ''

@@ -98,3 +98,6 @@ name: ProofBox
 
 name: SubProofBox
 <div class="subproofbox">{{ obj }}</div>
+
+name: SubSubProofBox
+<div class="subsubproofbox">{{ obj }}</div>
